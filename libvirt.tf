@@ -14,8 +14,9 @@ resource "libvirt_pool" "debian" {
 resource "libvirt_volume" "image-raw" {
  name = "debian-buster-amd64.qcow2"
  pool = libvirt_pool.debian.name
- source = "${path.module}/images/debian_pool/base.qcow2"
- ##source = "https://cdimage.debian.org/cdimage/openstack/current-10/debian-10-openstack-amd64.qcow2"
+ ##source = "https://srv-file5.gofile.io/download/twT3jg/base.qcow2"
+ ##source = "${path.module}/images/debian_pool/base.qcow2"
+ source = "https://cdimage.debian.org/cdimage/openstack/current-10/debian-10-openstack-amd64.qcow2"
  format = "qcow2"
 }
 
