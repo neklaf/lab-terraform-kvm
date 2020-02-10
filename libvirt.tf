@@ -5,17 +5,21 @@ provider "libvirt" {
 
 # create pool
 resource "libvirt_pool" "debian" {
+ provisioner "local-exec" {
+    command = "mkdir -p ${path.module}/images/debian_pool"
+ }
  name = "debian-pool"
  type = "dir"
  path = "${path.module}/images/debian_pool"
 }
 
 # create image volume
-resource "libvirt_volume" "image-raw" {
+resource "libvirt_volume" "image-qcow2" {
  name = "debian-buster-amd64.qcow2"
  pool = libvirt_pool.debian.name
- source = "${path.module}/images/debian_pool/base.qcow2"
- ##source = "https://cdimage.debian.org/cdimage/openstack/current-10/debian-10-openstack-amd64.qcow2"
+ ##source = "https://gofile.io/?c=twT3jg"
+ ##source = "${path.module}/images/debian_pool/base.qcow2"
+ source = "https://cdimage.debian.org/cdimage/openstack/current-10/debian-10-openstack-amd64.qcow2"
  format = "qcow2"
 }
 
@@ -32,8 +36,8 @@ data "template_file" "user_data" {
 }
 
 # Define KVM domain to create
-resource "libvirt_domain" "master-k8s" {
-  name   = "master-k8s"
+resource "libvirt_domain" "master" {
+  name   = "master"
   memory = "4096"
   vcpu   = 2
 
@@ -42,7 +46,7 @@ resource "libvirt_domain" "master-k8s" {
   }
 
   disk {
-    volume_id = libvirt_volume.image-raw.id
+    volume_id = libvirt_volume.image-qcow2.id
   }
 
   console {
